@@ -3,6 +3,7 @@ var wordArr = [[],[],[],[],[],[]];
 var lineCount = 0;
 var isWordValid = true;
 var word = words[Math.floor(Math.random()*words.length)];
+var isWordCorrect = true;
 
 console.log(word);
 
@@ -43,16 +44,31 @@ function typed(keycode) {
             }// for
             if (words.indexOf(string) > -1) {
                 console.log(string + " is valid");
+                isWordCorrect = true;
                 compare(string);
                 isWordValid = true;
                 lineCount++;
+
+                if (isWordCorrect) {
+                    console.log("SOLVED");
+                } else if (lineCount == 6) {
+                    console.log("LOST");
+                    setTimeout(function(){ 
+                        for (var i=0; i<6; i++) {
+                            for (var j=0; j<5; j++) {
+                                $("#" + i.toString() + j.toString()).html("").fadeOut();
+                            }
+                        }
+                    }, 1000);
+
+                }
+                
             } else {
                 console.log(string + " is not valid");
                 for (var i=0; i<5; i++) {
                     $("#" + lineCount.toString() + i.toString()).animate({backgroundColor:'#e74c3c', color:'white'}, 300);
                     $("#" + lineCount.toString() + i.toString()).effect("shake", {direction: "up", times: 2, distance: 5}, 300);
                     $("#" + lineCount.toString() + i.toString()).animate({backgroundColor:'white', color:'black'}, 300);
-
                 }
             }// else
         }// if
@@ -71,9 +87,11 @@ function compare(string) {
         } else if (word.indexOf(string[i]) > -1) {
             console.log("contains " + i);
             $("#" + lineCount.toString() + i.toString()).animate({backgroundColor:"#f1c40f"}, 300);
+            isWordCorrect = false;
          } else {
             console.log(i + " is wrong");
              $("#" + lineCount.toString() + i.toString()).animate({backgroundColor:"#bdc3c7"}, 300);
+             isWordCorrect = false;
          }
     }
 }
