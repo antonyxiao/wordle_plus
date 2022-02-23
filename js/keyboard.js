@@ -28,13 +28,13 @@ function typed(keycode) {
     // console.log("keycode: " + keycode.toString() + " finished: " + finished.toString());
     if (!finished) {
         var charCount = wordArr[lineCount].length;
-    }
+    }// if
 
     if (charCount == 5) {
         isWordValid = false;
     } else {
         isWordValid = true;
-    }
+    }// else
 
     if (keycode >= 97 && keycode <= 122 && isWordValid) {
         // console.log("keyed");
@@ -56,7 +56,7 @@ function typed(keycode) {
                 if (isWordCorrect) {
                     for (var i=0; i<5; i++) {
                         $("#" + (lineCount-1).toString() + i.toString()).animate({width:'+=5px', height:'+=5px'}, 200);
-                    }
+                    }// if
                     finished = true;
                 } else if (lineCount == 6) {
                     setTimeout(function(){ 
@@ -66,8 +66,8 @@ function typed(keycode) {
                                 $("#" + i.toString() + j.toString()).effect("shake", {direction: "up", times: 2, distance: 3}, 300);
                                 $("#" + i.toString() + j.toString()).animate({backgroundColor:'white', color:'black'}, 300);
                                 $("#p" + i.toString() + j.toString()).fadeOut(300);
-                            }
-                        }
+                            }// for
+                        }// for
                         setTimeout(function(){
                             for (var i=0; i<6; i++) {
                                 for (var j=0; j<5; j++) {
@@ -76,23 +76,23 @@ function typed(keycode) {
                                         shiftedIndex = (5 - i) + j;
                                         if (shiftedIndex > 4) {
                                             shiftedIndex -= 5;
-                                        }
-                                    }
+                                        }// if
+                                    }// if
                                     
                                     $("#p" + i.toString() + j.toString()).html(word[shiftedIndex]).fadeIn(300);
-                                }
-                            }
+                                }// for
+                            }// for
                         }, 1000);
                     }, 500);
                     finished = true;
-                }
+                }// else if
             } else {
                 // console.log(string + " is not valid");
                 for (var i=0; i<5; i++) {
                     $("#" + lineCount.toString() + i.toString()).animate({backgroundColor:'#e74c3c', color:'white'}, 300);
                     $("#" + lineCount.toString() + i.toString()).effect("shake", {direction: "up", times: 2, distance: 5}, 300);
                     $("#" + lineCount.toString() + i.toString()).animate({backgroundColor:'white', color:'black'}, 300);
-                }
+                }// for
             }// else
         }// if
     } else if (keycode == 8) {
@@ -111,8 +111,8 @@ function typed(keycode) {
                 isWordCorrect = true;
                 finished = false;
                 // console.log(word);
-            }
-        }
+            }// for
+        }// for
         $(".wrapper").animate({opacity:1}, 300);
     }// else if
 
@@ -123,20 +123,22 @@ function compare(string) {
         if (string[i] == word[i]) {
             // console.log(i + " is right");
             $("#" + lineCount.toString() + i.toString()).animate({backgroundColor: "#2ecc71"}, 300);
+            $('li:contains("'+ string[i] +'")').not("li:contains('return')").not("li:contains('delete')").animate({backgroundColor: "#2ecc71"}, 300);
         } else if (word.indexOf(string[i]) > -1) {
             // console.log("contains " + i);
             $("#" + lineCount.toString() + i.toString()).animate({backgroundColor:"#f1c40f"}, 300);
+            $('li:contains("' + string[i] + '")').not("li:contains('return')").not("li:contains('delete')").animate({backgroundColor: "#f1c40f"}, 300);
             isWordCorrect = false;
          } else {
             // console.log(i + " is wrong");
              $("#" + lineCount.toString() + i.toString()).animate({backgroundColor:"#bdc3c7"}, 300);
+             $('li:contains("' + string[i] + '")').not("li:contains('return')").not("li:contains('delete')").animate({backgroundColor: "#bdc3c7"}, 300);
              isWordCorrect = false;
-         }
-    }
-}
+         }// else
+    }// for
+}// compare
 
 $(function(){
-    var $write = $('#write');
 	
 	$('#keyboard li').click(function(){
 		var $this = $(this),
@@ -151,6 +153,6 @@ $(function(){
             typed(character);
 		} else {
             typed(character.charCodeAt(0));
-        }
-	});
+        }// else
+	});// .click
 });
