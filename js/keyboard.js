@@ -4,8 +4,9 @@ var lineCount = 0;
 var isWordValid = true;
 var word = words[Math.floor(Math.random()*words.length)];
 var isWordCorrect = true;
+var finished = false;
 
-console.log(word);
+// console.log(word);
 
 $(function() {
     $(window).keypress(function(e) {
@@ -24,7 +25,10 @@ $(function() {
 
 // user typed an alphabet character, pressed enter, or backspace
 function typed(keycode) {
-    var charCount = wordArr[lineCount].length;
+    // console.log("keycode: " + keycode.toString() + " finished: " + finished.toString());
+    if (!finished) {
+        var charCount = wordArr[lineCount].length;
+    }
 
     if (charCount == 5) {
         isWordValid = false;
@@ -33,38 +37,57 @@ function typed(keycode) {
     }
 
     if (keycode >= 97 && keycode <= 122 && isWordValid) {
-        console.log("keyed");
+        // console.log("keyed");
         wordArr[lineCount][charCount] = String.fromCharCode(keycode); 
-        $("#" + lineCount.toString() + charCount.toString()).html(wordArr[lineCount][charCount].toString());
-    } else if (keycode == 13) {
+        $("#" + lineCount.toString() + charCount.toString()).html("<p id=\"p" + lineCount.toString() + charCount.toString() + "\">" + wordArr[lineCount][charCount].toString() + "</p>");
+    } else if (keycode == 13 && !finished) {
         if (charCount == 5 ) {
             var string = "";
             for (let char of wordArr[lineCount]) {
                 string += char;
             }// for
             if (words.indexOf(string) > -1) {
-                console.log(string + " is valid");
+                // console.log(string + " is valid");
                 isWordCorrect = true;
                 compare(string);
                 isWordValid = true;
                 lineCount++;
 
                 if (isWordCorrect) {
-                    console.log("SOLVED");
+                    for (var i=0; i<5; i++) {
+                        $("#" + (lineCount-1).toString() + i.toString()).animate({width:'+=5px', height:'+=5px'}, 200);
+                    }
+                    finished = true;
                 } else if (lineCount == 6) {
-                    console.log("LOST");
                     setTimeout(function(){ 
                         for (var i=0; i<6; i++) {
                             for (var j=0; j<5; j++) {
-                                $("#" + i.toString() + j.toString()).html("").fadeOut();
+                                $("#" + i.toString() + j.toString()).animate({backgroundColor:'#e74c3c', color:'white'}, 300);
+                                $("#" + i.toString() + j.toString()).effect("shake", {direction: "up", times: 2, distance: 3}, 300);
+                                $("#" + i.toString() + j.toString()).animate({backgroundColor:'white', color:'black'}, 300);
+                                $("#p" + i.toString() + j.toString()).fadeOut(300);
                             }
                         }
-                    }, 1000);
-
+                        setTimeout(function(){
+                            for (var i=0; i<6; i++) {
+                                for (var j=0; j<5; j++) {
+                                    var shiftedIndex = j + i;
+                                    if (i > 0) {
+                                        shiftedIndex = (5 - i) + j;
+                                        if (shiftedIndex > 4) {
+                                            shiftedIndex -= 5;
+                                        }
+                                    }
+                                    
+                                    $("#p" + i.toString() + j.toString()).html(word[shiftedIndex]).fadeIn(300);
+                                }
+                            }
+                        }, 1000);
+                    }, 500);
+                    finished = true;
                 }
-                
             } else {
-                console.log(string + " is not valid");
+                // console.log(string + " is not valid");
                 for (var i=0; i<5; i++) {
                     $("#" + lineCount.toString() + i.toString()).animate({backgroundColor:'#e74c3c', color:'white'}, 300);
                     $("#" + lineCount.toString() + i.toString()).effect("shake", {direction: "up", times: 2, distance: 5}, 300);
@@ -75,6 +98,22 @@ function typed(keycode) {
     } else if (keycode == 8) {
         wordArr[lineCount].pop();
         $("#" + lineCount.toString() + (charCount-1).toString()).html("");
+    } else if (keycode == 13 && finished) { 
+        $(".wrapper").animate({opacity:0}, 300);
+        for (var i=0; i<6; i++) {
+            for (var j=0; j<5; j++) {
+                $("#" + i.toString() + j.toString()).animate({backgroundColor:'white', color:'black', width:'60px'}, 300);
+                $("#p" + i.toString() + j.toString()).fadeOut(300);
+                wordArr = [[],[],[],[],[],[]];
+                lineCount = 0;
+                isWordValid = true;
+                word = words[Math.floor(Math.random()*words.length)];
+                isWordCorrect = true;
+                finished = false;
+                // console.log(word);
+            }
+        }
+        $(".wrapper").animate({opacity:1}, 300);
     }// else if
 
 }// typed
@@ -82,20 +121,19 @@ function typed(keycode) {
 function compare(string) {
     for (var i=0; i<5; i++) {
         if (string[i] == word[i]) {
-            console.log(i + " is right");
+            // console.log(i + " is right");
             $("#" + lineCount.toString() + i.toString()).animate({backgroundColor: "#2ecc71"}, 300);
         } else if (word.indexOf(string[i]) > -1) {
-            console.log("contains " + i);
+            // console.log("contains " + i);
             $("#" + lineCount.toString() + i.toString()).animate({backgroundColor:"#f1c40f"}, 300);
             isWordCorrect = false;
          } else {
-            console.log(i + " is wrong");
+            // console.log(i + " is wrong");
              $("#" + lineCount.toString() + i.toString()).animate({backgroundColor:"#bdc3c7"}, 300);
              isWordCorrect = false;
          }
     }
 }
-
 
 $(function(){
     var $write = $('#write');
