@@ -5,7 +5,7 @@
 
 body {
     font: 100%/1.5 Verdana, Sans-Serif;
-    background: #eee;
+    background: #222;
 }
 
 #container {
@@ -58,7 +58,7 @@ body {
         line-height: 50px;
         text-align: center;
         background: #fff;
-        border: 1px solid #f9f9f9;
+        /* border: 1px solid #f9f9f9; */
         -moz-border-radius: 5px;
         -webkit-border-radius: 5px;
     }
