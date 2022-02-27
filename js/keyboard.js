@@ -109,7 +109,7 @@ function typed(keycode) {
         $(".wrapper").animate({opacity:0}, 300);
         for (var i=0; i<6; i++) {
             for (var j=0; j<5; j++) {
-                $("#" + i.toString() + j.toString()).animate({backgroundColor:'white', color:'black', width:'60px'}, 300);
+                $("#" + i.toString() + j.toString()).animate({backgroundColor:'white', color:'black', width:'60px', height:'60px'}, 300);
                 $("#p" + i.toString() + j.toString()).fadeOut(300);
                 wordArr = [[],[],[],[],[],[]];
                 lineCount = 0;
